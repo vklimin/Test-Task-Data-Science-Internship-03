@@ -277,3 +277,111 @@ def strange_function(data):
 
 ---
 
+## Задание 5
+
+**У вас есть датафрейм df_sales с данными о продажах:**
+
+* user_id — идентификатор пользователя
+* item_id — идентификатор товара
+* price — цена покупки
+
+**Необходимо рассчитать средние траты каждого пользователя (сумма всех его покупок / количество покупок).\
+Какие из следующих вариантов кода решают задачу правильно?**
+
+Выберите все подходящие ответы из списка:
+
+* ✅ df_sales.groupby("user_id").apply(lambda x: x["price"].sum() / len(x))
+* ❌ df_sales.groupby("user_id")["price"].sum()
+* ❌ df_sales.groupby("user_id")["item_id"].count()
+* ✅ df_sales.groupby("user_id")["price"].mean()
+
+---
+
+## Задание 6
+
+**У вас есть три датафрейма. Вам нужно написать код на pandas:**
+
+1. df_user_item — таблица транзакций пользователей
+    * user_id — идентификатор пользователя
+    * item_id — идентификатор товара
+    * timestamp — время совершения транзакции
+
+2. df_item_cat — справочник категорий товаров
+    * item_id — идентификатор товара
+    * cat_id — идентификатор категории товара
+
+3. df_item_price — история изменения цен товаров
+    * item_id — идентификатор товара
+    * price — цена товара
+    * timestamp — момент времени, когда цена была актуальна
+
+**Правило: Цена товара в момент транзакции (t1) определяется как цена с наибольшей датой t0 ≤ t1, где t0 — момент фиксации цены в df_item_price.**
+
+**Задача: Напишите код на pandas, который формирует таблицу следующего вида:**
+* user_id — идентификатор пользователя
+* cat_id — категория товара
+* avg_price — средняя цена купленных пользователем товаров данной категории (с учётом правильного соответствия цены времени транзакции)
+
+**Замечание: Задача будет проверяться автоматически. Не изменяйте название функции и порядок входных данных.  Функция должна вернуть один датафрейм с нужным колонками.**
+
+**Напишите программу. Тестируется через stdin → stdout**
+
+```python
+import pandas as pd
+from typing import Tuple
+
+
+def foo(df_user_item: pd.DataFrame, df_item_cat: pd.DataFrame, df_item_price: pd.DataFrame) -> pd.DataFrame:
+    '''
+    Допишите код функции согласно ТЗ
+    '''
+
+    return result
+
+
+def make_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    df_user_item = pd.DataFrame(
+        {
+            "user_id": [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 5, 5, 5, 5],
+            "item_id": [1, 2, 3, 4, 1, 2, 3, 4, 1, 1, 3, 4, 4, 4, 4],
+            "timestamp": [1, 1, 2, 2, 3, 3, 4, 4, 1, 4, 1, 1, 2, 3, 4],
+        }
+    )
+
+    df_item_cat = pd.DataFrame(
+        {
+            "item_id": [1, 2, 3, 4],
+            "cat_id": [1, 1, 2, 2],
+        }
+    )
+
+    df_item_price = pd.DataFrame(
+        {
+            "item_id": [1, 2, 3, 4, 1, 2, 3, 4],
+            "timestamp": [0, 0, 0, 0, 2, 2, 3, 3],
+            "price": [100, 200, 300, 400, 500, 600, 700, 800],
+        }
+    )
+
+    df_user_cat_price_avg = pd.DataFrame(
+        {
+            "user_id": [1, 1, 2, 2, 3, 4, 5],
+            "cat_id": [1, 2, 1, 2, 1, 2, 2],
+            "avg_price": [150.0, 350.0, 550.0, 750.0, 300.0, 300.0, 600.0],
+        }
+    )
+    return df_user_item, df_item_cat, df_item_price, df_user_cat_price_avg
+
+
+def test(func: callable):
+    df_user_item, df_item_cat, df_item_price, df_user_cat_price_avg = make_data()
+    df_test = func(df_user_item, df_item_cat, df_item_price)
+    pd.testing.assert_frame_equal(df_user_cat_price_avg, df_test)
+
+
+test(foo)
+```
+
+> Код функции не привожу, он несложный.
+
+---
